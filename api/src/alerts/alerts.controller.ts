@@ -2,6 +2,7 @@ import {
   Body,
   Controller,
   Delete,
+  ForbiddenException,
   Get,
   HttpCode,
   HttpStatus,
@@ -62,9 +63,9 @@ export class AlertsController {
   @Post('dev/simulate-price')
   @ApiOkResponse({ description: 'Price update simulated (dev only)' })
   simulatePrice(@Body() dto: SimulatePriceDto): { message: string } {
-    // if (process.env.NODE_ENV === 'production') {
-    //   throw new ForbiddenException('Not available in production')
-    // }
+    if (process.env.NODE_ENV === 'production') {
+      throw new ForbiddenException('Not available in production');
+    }
 
     this.stockEventsService.emitPriceUpdate(
       dto.symbol.toUpperCase(),
